@@ -1,0 +1,25 @@
+
+spring:
+  datasource:
+    username: postgres
+    password: lol
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://structuremade.de:5431/structuremade
+  jpa:
+    show-sql: on
+    generate-ddl: on
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        default_schema: services
+  application:
+    name: AUTHSERVICE
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: https://eureka.structuremade.de/eureka/
+server:
+  port: 80
