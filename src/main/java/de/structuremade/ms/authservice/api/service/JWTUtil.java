@@ -43,12 +43,10 @@ public class JWTUtil {
     }
 
     public String createPasswordResetToken(User user) {
-        Calendar expiration = Calendar.getInstance();
-        expiration.add(Calendar.DATE, 1);
         return Jwts.builder()
                 .setSubject(user.getId())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expiration.getTimeInMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 86400000L))
                 .signWith(SignatureAlgorithm.HS256, signingKey)
                 .compact();
     }
@@ -93,24 +91,20 @@ public class JWTUtil {
     }
 
     public String createCookieToken(User user) {
-        Calendar expiration = Calendar.getInstance();
-        expiration.add(Calendar.DATE, 30);
         return Jwts.builder()
                 .setSubject(user.getId())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expiration.getTimeInMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 2592000000L))
                 .signWith(SignatureAlgorithm.HS256, signingKey)
                 .compact();
     }
 
     private String createToken(Map<String, Object> claims, User user) {
-        Calendar expiration = Calendar.getInstance();
-        expiration.add(Calendar.MINUTE, 10);
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(user.getId())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(expiration.getTimeInMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 600000L))
                 .signWith(SignatureAlgorithm.HS256, signingKey)
                 .compact();
     }
