@@ -42,6 +42,7 @@ public class AuthRoute {
 
 
     @Transactional
+    @CrossOrigin
     @PostMapping(path = "/login", produces = "application/json", consumes = "application/json")
     public Object loginUser(@RequestBody @Valid LoginUserJson userJson, HttpServletResponse response, HttpServletRequest request) {
         /*Method Variables*/
@@ -97,6 +98,7 @@ public class AuthRoute {
         }
     }
 
+    @CrossOrigin
     @GetMapping(path = "/refreshtoken", produces = "application/json")
     public Object refreshToken(@RequestBody RefreshTokenJson refreshTokenJson, HttpServletRequest request, HttpServletResponse response) {
         /*Method Variables*/

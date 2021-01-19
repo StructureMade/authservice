@@ -6,6 +6,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RefreshTokenJson {
-
     private String schoolid;
 }

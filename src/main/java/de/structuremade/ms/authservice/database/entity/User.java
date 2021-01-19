@@ -58,7 +58,7 @@ public class User {
             , inverseJoinColumns = @JoinColumn(name = "roleid", foreignKey = @ForeignKey(name = "fk_roleid")))
     private List<Role> roles = new ArrayList<>();
 
-   @ManyToMany(targetEntity = Lessons.class)
+    @ManyToMany(targetEntity = Lessons.class)
     @JoinTable(name = "userlessons", schema = "services", joinColumns = @JoinColumn(name = "userid", foreignKey = @ForeignKey(name = "fk_userid"))
             , inverseJoinColumns = @JoinColumn(name = "lessonid", foreignKey = @ForeignKey(name = "fk_lessonid")))
     private List<Lessons> lessonRoles = new ArrayList<>();

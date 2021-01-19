@@ -1,4 +1,3 @@
-
 spring:
   datasource:
     username: postgres
@@ -23,3 +22,4 @@ eureka:
       defaultZone: https://eureka.structuremade.de/eureka/
 server:
   port: 80
+
