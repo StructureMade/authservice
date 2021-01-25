@@ -7,36 +7,27 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "lessons", schema = "services", indexes = {
-        @Index(name = "id_lessonrolesid", columnList = "id", unique = true)})
+@Table(name = "userpermissions")
 @Getter
 @Setter
-public class Lessons {
+public class Userpermissions {
+
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(updatable = false, nullable = false)
     private String id;
-    @Column
-    private String name;
 
-    @Column(length = 3)
-    private int state;
+    @ManyToOne(targetEntity = Permissions.class)
+    @JoinColumn(name = "permission", foreignKey = @ForeignKey(name = "fk_permission"))
+    private Permissions permission;
 
-    @Column
-    private String startOfLesson;
-
-    @Column
-    private String endOfLesson;
-
-    @Column
-    private String day;
-
-    @OneToOne
+    @ManyToOne(targetEntity = User.class)
     @JoinColumn(name = "userid", foreignKey = @ForeignKey(name = "fk_userid"))
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "schoolid", foreignKey = @ForeignKey(name = "fk_schoolid"))
+    @ManyToOne(targetEntity = School.class)
+    @JoinColumn(name = "school", foreignKey = @ForeignKey(name = "fk_school"))
     private School school;
+
 }

@@ -5,8 +5,8 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -36,6 +36,9 @@ public class User {
     @Column
     private String password;
 
+    @Column
+    private String abbreviation;
+
     @Column(nullable = false)
     private Date creationDate;
 
@@ -48,18 +51,31 @@ public class User {
     @Column
     private String lastSchool;
 
-    @ManyToMany(targetEntity = School.class, fetch = FetchType.LAZY)
+    @ManyToMany(targetEntity = School.class)
     @JoinTable(name = "userschools", schema = "services", joinColumns = @JoinColumn(name = "userid", foreignKey = @ForeignKey(name = "fk_userid"))
-            , inverseJoinColumns = @JoinColumn(name = "schoolid", foreignKey = @ForeignKey(name = "fk_schoolid")))
+            , inverseJoinColumns = @JoinColumn(name = "school", foreignKey = @ForeignKey(name = "fk_school")))
     private List<School> schools = new ArrayList<>();
 
-    @ManyToMany(targetEntity = Role.class, fetch = FetchType.EAGER)
+    @ManyToMany(targetEntity = Role.class)
     @JoinTable(name = "userroles", schema = "services", joinColumns = @JoinColumn(name = "userid", foreignKey = @ForeignKey(name = "fk_userid"))
-            , inverseJoinColumns = @JoinColumn(name = "roleid", foreignKey = @ForeignKey(name = "fk_roleid")))
+            , inverseJoinColumns = @JoinColumn(name = "role", foreignKey = @ForeignKey(name = "fk_role")))
     private List<Role> roles = new ArrayList<>();
 
-    @ManyToMany(targetEntity = Lessons.class)
-    @JoinTable(name = "userlessons", schema = "services", joinColumns = @JoinColumn(name = "userid", foreignKey = @ForeignKey(name = "fk_userid"))
-            , inverseJoinColumns = @JoinColumn(name = "lessonid", foreignKey = @ForeignKey(name = "fk_lessonid")))
-    private List<Lessons> lessonRoles = new ArrayList<>();
+    @ManyToMany(targetEntity = User.class)
+    @JoinTable(name = "userparents", schema = "services", joinColumns = @JoinColumn(name = "parent", foreignKey = @ForeignKey(name = "fk_parent"))
+            , inverseJoinColumns = @JoinColumn(name = "student", foreignKey = @ForeignKey(name = "fk_student")))
+    private List<User> parents;
+
+    @ManyToMany(targetEntity = User.class)
+    @JoinTable(name = "userparents", schema = "services", joinColumns = @JoinColumn(name = "parent", foreignKey = @ForeignKey(name = "fk_parent"))
+            , inverseJoinColumns = @JoinColumn(name = "student", foreignKey = @ForeignKey(name = "fk_student")))
+    private List<User> childrens;
+
+    @OneToMany(targetEntity = Userpermissions.class)
+    @JoinColumn(name = "userid")
+    private List<Userpermissions> permissions;
+
+    @ManyToOne(targetEntity = Class.class)
+    @JoinColumn(name = "class", foreignKey = @ForeignKey(name = "fk_class"))
+    private Class userClass;
 }

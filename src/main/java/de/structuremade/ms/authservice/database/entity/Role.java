@@ -24,13 +24,13 @@ public class Role {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "schoolid", foreignKey = @ForeignKey(name = "fk_schoolid"))
+    @JoinColumn(name = "school")
     private School school;
 
-    @ManyToMany(targetEntity = Permissions.class, fetch = FetchType.EAGER)
+    @ManyToMany(targetEntity = Permissions.class, fetch = FetchType.LAZY)
     @JoinTable(name = "rolepermissions", schema = "services",
-            joinColumns = @JoinColumn(name = "roleid", foreignKey = @ForeignKey(name = "fk_roleid"))
-            , inverseJoinColumns = @JoinColumn(name = "permissionid", foreignKey = @ForeignKey(name = "fk_permissionid")))
+            joinColumns = @JoinColumn(name = "role", foreignKey = @ForeignKey(name = "fk_role"))
+            , inverseJoinColumns = @JoinColumn(name = "permission", foreignKey = @ForeignKey(name = "fk_permission")))
     private List<Permissions> permissions = new ArrayList<>();
 }
 

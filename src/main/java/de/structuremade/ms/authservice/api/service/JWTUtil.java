@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
@@ -81,12 +82,19 @@ public class JWTUtil {
     }
 
 
+    @Transactional
     public String generateToken(User user) {
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder permissions= new StringBuilder();
+        StringBuilder childrens= new StringBuilder();
+
         Map<String, Object> claims = new HashMap<>();
         claims.put("schoolid", user.getLastSchool());
-        user.getRoles().forEach(role -> role.getPermissions().forEach(perm -> stringBuilder.append(perm.getName()).append(",")));
-        claims.put("perms", stringBuilder.toString());
+        user.getChildrens().forEach(children -> childrens.append(children.getId()).append(","));
+        claims.put("children",childrens.toString());
+        claims.put("classid", user.getUserClass());
+        user.getRoles().forEach(role -> role.getPermissions().forEach(perm -> permissions.append(perm.getName()).append(",")));
+        user.getPermissions().forEach(perm -> permissions.append(perm.getPermission().getName()).append(","));
+        claims.put("perms", permissions.toString());
         return createToken(claims, user);
     }
 

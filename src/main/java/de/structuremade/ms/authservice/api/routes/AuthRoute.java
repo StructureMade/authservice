@@ -2,7 +2,6 @@ package de.structuremade.ms.authservice.api.routes;
 
 import com.google.gson.Gson;
 import de.structuremade.ms.authservice.api.json.LoginUserJson;
-import de.structuremade.ms.authservice.api.json.RefreshTokenJson;
 import de.structuremade.ms.authservice.api.service.JWTUtil;
 import de.structuremade.ms.authservice.database.entity.School;
 import de.structuremade.ms.authservice.database.entity.User;
@@ -100,7 +99,37 @@ public class AuthRoute {
 
     @CrossOrigin
     @GetMapping(path = "/refreshtoken", produces = "application/json")
-    public Object refreshToken(@RequestBody RefreshTokenJson refreshTokenJson, HttpServletRequest request, HttpServletResponse response) {
+    public Object refreshToken(HttpServletRequest request, HttpServletResponse response) {
+        /*Method Variables*/
+        Gson gson = new Gson();
+        User user;
+        /*End of Variables*/
+        try {
+            /*Get Cookies from User and get from there the JWT Token*/
+            for (Cookie cookie : request.getCookies()) {
+                if (cookie.getName().equalsIgnoreCase("jwt")) {
+                    if (jwtUtil.isTokenExpired(cookie.getValue()) || jwtUtil.isTokenInBlacklist(cookie.getValue())) {
+                        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                        return gson.toJson(new ResponseJWT());
+                    }
+                    user = userRepository.findAllById(jwtUtil.extractIdOrEmail(cookie.getValue()));
+                    String token = jwtUtil.generateToken(user);
+                    response.setStatus(HttpStatus.ACCEPTED.value());
+                    return gson.toJson(new ResponseJWT(token));
+                }
+            }
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return gson.toJson(new ResponseJWT());
+        } catch (Exception e) {
+            LOGGER.error("Couldn't generate Token", e.fillInStackTrace());
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            return gson.toJson(new ResponseJWT());
+        }
+    }
+
+    @CrossOrigin
+    @GetMapping(path = "/refreshtoken/{schoolid}", produces = "application/json")
+    public Object refreshToken(@PathVariable String schoolid, HttpServletRequest request, HttpServletResponse response) {
         /*Method Variables*/
         Gson gson = new Gson();
         User user;
@@ -115,9 +144,7 @@ public class AuthRoute {
                     }
                     /*Watch if User exists and set lastschool*/
                     user = userRepository.findAllById(jwtUtil.extractIdOrEmail(cookie.getValue()));
-                    if (!refreshTokenJson.getSchoolid().isEmpty() && !refreshTokenJson.getSchoolid().isBlank()) {
-                        user.setLastSchool(refreshTokenJson.getSchoolid());
-                    }
+                    user.setLastSchool(schoolid);
                     String token = jwtUtil.generateToken(user);
                     response.setStatus(HttpStatus.ACCEPTED.value());
                     return gson.toJson(new ResponseJWT(token));
@@ -131,4 +158,6 @@ public class AuthRoute {
             return gson.toJson(new ResponseJWT());
         }
     }
+
+
 }

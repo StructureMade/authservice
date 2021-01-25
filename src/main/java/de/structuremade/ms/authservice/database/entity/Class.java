@@ -5,17 +5,13 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "schools", schema = "services", indexes = {
-        @Index(name = "id_schoolid", columnList = "id", unique = true)
-})
+@Table(name = "class")
 @Getter
 @Setter
-public class School {
-
+public class Class {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
@@ -25,11 +21,16 @@ public class School {
     @Column
     private String name;
 
-    @Column
-    private String email;
+    @ManyToOne(targetEntity = User.class)
+    @JoinColumn(name = "classteacher", foreignKey = @ForeignKey(name = "fk_classteacher"))
+    private User classTeacher;
 
-    @OneToMany(targetEntity = Role.class, orphanRemoval = true)
+    @ManyToOne(targetEntity = School.class)
     @JoinColumn(name = "school", foreignKey = @ForeignKey(name = "fk_school"))
-    private List<Role> roles = new ArrayList<>();
+    private School school;
+
+    @OneToMany(targetEntity = User.class)
+    @JoinColumn(name = "class")
+    private List<User> students;
 
 }

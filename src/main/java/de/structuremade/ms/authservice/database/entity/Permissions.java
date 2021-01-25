@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(schema = "services", indexes = {
@@ -23,5 +24,14 @@ public class Permissions {
     private String name;
 
     @Column
+    private boolean topicperm;
+
+    @Column
     private boolean masterPerms;
+
+
+    @OneToMany(targetEntity = Userpermissions.class)
+    @JoinColumn(name = "permission")
+    private List<Userpermissions> permissions;
+
 }
