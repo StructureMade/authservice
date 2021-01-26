@@ -1,9 +1,12 @@
 package de.structuremade.ms.authservice.api.service;
 
+import de.structuremade.ms.authservice.database.entity.School;
 import de.structuremade.ms.authservice.database.entity.User;
+import de.structuremade.ms.authservice.database.repo.SchoolRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +22,9 @@ public class JWTUtil {
     private final List<String> blacklistMap = new ArrayList<>();
     private static final String SECRET = "8NYjXn89%q4fbF5yTAEa4r_A^WeXq*gCtDe4!4mV-59SrJN%d!$4Qz*+";
     Key signingKey = new SecretKeySpec(DatatypeConverter.parseBase64Binary(SECRET), SignatureAlgorithm.HS512.getJcaName());
+
+    @Autowired
+    SchoolRepository schoolRepository;
 
     @Bean
     private void blacklistedTokenSort() {
@@ -84,15 +90,19 @@ public class JWTUtil {
 
     @Transactional
     public String generateToken(User user) {
+        School school = schoolRepository.getOne(user.getLastSchool());
         StringBuilder permissions= new StringBuilder();
         StringBuilder childrens= new StringBuilder();
-
         Map<String, Object> claims = new HashMap<>();
         claims.put("schoolid", user.getLastSchool());
         user.getChildrens().forEach(children -> childrens.append(children.getId()).append(","));
         claims.put("children",childrens.toString());
         claims.put("classid", user.getUserClass());
-        user.getRoles().forEach(role -> role.getPermissions().forEach(perm -> permissions.append(perm.getName()).append(",")));
+        user.getRoles().forEach(role -> {
+            if (role.getSchool() == school){
+                role.getPermissions().forEach(perm -> permissions.append(perm.getName()).append(","));
+            }
+        });
         user.getPermissions().forEach(perm -> permissions.append(perm.getPermission().getName()).append(","));
         claims.put("perms", permissions.toString());
         return createToken(claims, user);

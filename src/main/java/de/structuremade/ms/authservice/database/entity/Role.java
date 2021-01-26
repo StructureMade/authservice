@@ -32,5 +32,10 @@ public class Role {
             joinColumns = @JoinColumn(name = "role", foreignKey = @ForeignKey(name = "fk_role"))
             , inverseJoinColumns = @JoinColumn(name = "permission", foreignKey = @ForeignKey(name = "fk_permission")))
     private List<Permissions> permissions = new ArrayList<>();
+
+    @ManyToMany(targetEntity = User.class)
+    @JoinTable(name = "userroles", schema = "services", joinColumns = @JoinColumn(name = "userid", foreignKey = @ForeignKey(name = "fk_userid"))
+            , inverseJoinColumns = @JoinColumn(name = "role", foreignKey = @ForeignKey(name = "fk_role")))
+    private List<User> users = new ArrayList<>();
 }
 
