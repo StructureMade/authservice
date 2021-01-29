@@ -26,7 +26,7 @@ public class JWTUtil {
     @Autowired
     SchoolRepository schoolRepository;
 
-    @Bean
+    /*@Bean
     private void blacklistedTokenSort() {
         if (!blacklistMap.isEmpty()) {
             for (int i = 0; i <= blacklistMap.size(); i++) {
@@ -35,7 +35,7 @@ public class JWTUtil {
                 }
             }
         }
-    }
+    }*/
 
     public boolean isTokenInBlacklist(String token) {
         return blacklistMap.contains(token);
