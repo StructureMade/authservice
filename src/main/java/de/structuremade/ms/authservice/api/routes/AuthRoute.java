@@ -43,7 +43,7 @@ public class AuthRoute {
     @Transactional
     @CrossOrigin
     @PostMapping(path = "/login", produces = "application/json", consumes = "application/json")
-    public Object loginUser(@RequestBody @Valid LoginUserJson userJson, HttpServletResponse response, HttpServletRequest request) {
+    public Object loginUser(@RequestBody @Valid LoginUserJson userJson, HttpServletResponse response) {
         /*Method Variables*/
         Gson gson = new Gson();
         Cookie cookie;

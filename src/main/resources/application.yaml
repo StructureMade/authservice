@@ -4,6 +4,11 @@ spring:
     password: lol
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://structuremade.de:5432/structuremade
+    hikari:
+      connection-timeout: 30000
+      idle-timeout: 600000
+      maximum-pool-size: 4
+      max-lifetime: 1800000
   jpa:
     show-sql: on
     generate-ddl: on
@@ -22,4 +27,3 @@ eureka:
       defaultZone: https://eureka.structuremade.de/eureka/
 server:
   port: 80
-

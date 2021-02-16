@@ -94,10 +94,12 @@ public class JWTUtil {
         StringBuilder permissions= new StringBuilder();
         StringBuilder childrens= new StringBuilder();
         Map<String, Object> claims = new HashMap<>();
+        claims.put("firstname", user.getFirstname());
+        claims.put("name", user.getName());
         claims.put("schoolid", user.getLastSchool());
         user.getChildrens().forEach(children -> childrens.append(children.getId()).append(","));
         claims.put("children",childrens.toString());
-        claims.put("classid", user.getUserClass());
+        claims.put("class", user.getUserClass().getId());
         user.getRoles().forEach(role -> {
             if (role.getSchool() == school){
                 role.getPermissions().forEach(perm -> permissions.append(perm.getName()).append(","));
