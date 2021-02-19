@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Locale;
 
 @RestController
 @Validated
@@ -54,7 +55,7 @@ public class AuthRoute {
         /*End of Variables*/
         try {
             /*Get User and check if an User was found*/
-            user = userRepository.findByEmail(userJson.getEmail());
+            user = userRepository.findByEmail(userJson.getEmail().toLowerCase());
             if (user != null) {
                 /*Check if User typed the right Password*/
                 if (BCrypt.checkpw(userJson.getPassword(), user.getPassword()) && user.isVerified()) {
